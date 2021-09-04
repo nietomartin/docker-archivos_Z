@@ -1,0 +1,81 @@
+Descompresión de archivos .Z, utilizando contenedor Docker con Ubuntu
+----------------------------------------------------------------------
+Instalacion de docker:
+1. Descargar Docker : https://www.docker.com/products/docker-desktop
+2. ejecutar docker (se abrirá la GUI)
+3. Buscar el contenedor inspiring_williams ubuntu, u otro para sistema operativos linux ubuntu
+4. colocando el cursor sobre el boton de flecha a la derecha, dar click para iniciar el contenedor
+5. colocar el cursor sobre el icono de >_ (prompt sistema), presionarlo para abrir el CLI cliente docker
+
+Otros: Estando en el CLI Docker
+1. Instalar el editor vim para editar los archivos una ves descomprimidos.
+2. Instalar el editor nano para editar los archivos una vez descomprimidos
+3. ejecutar los comandos:
+   cd [ENTER]                      vamos a la carpeta HOME del usuario root/sifi
+   pwd                             debe retornar  #/root
+   mkdir sifi [ENTER]              creamos la carpeta SIFI
+   cd SIFI                         entramos a la carpeta SIFI
+      
+Proceso de descompresión:
+A) copia de los archivos comprimidos .Z del host (máquina windows al linux)
+1. Ubicarse en la carpeta donde estén los archivos .Z
+2. Abrir consola sistema operativo (cmd)
+3. Se necesita saber el Id del contenedor, ejecutar el comando docker ps
+   Tomar el número del campo CONTAINER Id
+4. Ejecutamos el comando de copiar archivos del host al contenedor
+   docker cp . 5691e9e6e3d7:/root/sifi   
+   
+   Donde 5691e9e6e3d7 lo reemplaza por el numero de su ID container
+   y /root/sifi lo cambia por la carpeta que haya definido donde va a almacenar los archivos
+
+B) descomprimir archivos dentro del contenedor docker Linux:
+   NOTA: Tener en cuenta que todos los archivos .Z proceden de una carpeta llamada backup, por lo tanto cada que se descomprima un archivo habrá que renombrar
+         la carpeta para que no se sobreescriba con una descompresión posterior.
+   1. Ir a la linea de comandos del docker cliente (donde está el prompt #)
+   2. asegurarse de estar en la carpeta sifi de /root  
+      # cd /root/sifi [ENTER]
+   3. ejecutar el comando ls para ver un listado de los archivos y poder llevar el control del proceso
+   4. Descomprimir el archivo escogido, utilizamos el comando tar co los parámetros x que extrae, z que descomprime, v verbose (eco del proceso), f de files archivos
+      # tar xzvf R021abr2021.Z
+   5. Renombrar la carpeta backup que se creó.
+      # mv backup R021abr2021 [ENTER]
+   
+      Si desea comprobar, ejecute el comando ls -p, el cual muestra las carpetas con una barra inclinada al final
+	  
+   6. Repita este procedimient para cada uno de los archivos	  
+      
+Copia de archivos descomprimidos del Docket Ubuntu al sistema Windows
+    1. Vamos a la linea de comandos windows (cmd)
+	NOTA: Verificar que estemos en la carpeta donde deseamos salvar los archivos
+	2. ejecutar:
+	D:\backhup_sifi\> docker cp 5691e9e6e3d7:/root/sifi/R021abr2021 .
+	
+	donde docker cp 5691e9e6e3d7 es el numero del contenedor Id
+	/root/sifi/R021abr2021 es la carpeta que queremos traer del contenedor linux a nuestr o windows
+	. hace refencia al sitio actual donde estemos en windows, ej: D:\backup_sifi\
+	
+	3. Podemos entrar a la carpeta que trajimos donde están los archivos descomprimidos
+	   D:\backhup_sifi\>cd r021abr2021 [ENTER]
+	   D:\backhup_sifi\>dir          y veremos los archivos los cuales son rchivos planos separados con tabulador y que ya pueden ser procesados en Excel o cargados a tablas
+	                                 de Base de Datos
+	   a menaera de ejemplo, un fragmento de un archivo (fa_facturad.unl):
+		R021|12301|1|A|002|0|12/31/2004|2004|12|IN|0.0|0.0|cartera|04/01/2005|
+		R021|12301|1|A|002|0|12/31/2004|2004|12|TF|1515448.0|21805.0|cartera|04/01/2005|
+		R021|12302|1|A|003|0|12/31/2004|2004|12|IN|0.0|0.0|cartera|04/01/2005|
+		R021|12302|1|A|003|0|12/31/2004|2004|12|TF|79125.0|31650.0|cartera|04/01/2005|
+		R021|12303|1|A|017|0|12/31/2004|2004|12|IN|0.0|0.0|cartera|04/01/2005|
+		R021|12303|1|A|017|0|12/31/2004|2004|12|TF|94950.0|31650.0|cartera|04/01/2005|
+		R021|12304|1|A|018|0|12/31/2004|2004|12|IN|0.0|0.0|cartera|04/01/2005|
+		R021|12304|1|A|018|0|12/31/2004|2004|12|TF|240727.0|21805.0|cartera|04/01/2005|
+		R021|12305|1|A|018|A|12/31/2004|2004|12|IN|0.0|0.0|cartera|04/01/2005|
+		R021|12305|1|A|018|A|12/31/2004|2004|12|TF|340554.0|31650.0|cartera|04/01/2005|
+		R021|12306|1|A|024|0|12/31/2004|2004|12|IN|0.0|0.0|cartera|04/01/2005|
+		R021|12306|1|A|024|0|12/31/2004|2004|12|TF|87038.0|31650.0|cartera|04/01/2005|
+		R021|12307|1|A|026|0|12/31/2004|2004|12|IN|0.0|0.0|cartera|04/01/2005|
+		R021|12307|1|A|026|0|12/31/2004|2004|12|TF|94950.0|31650.0|cartera|04/01/2005|
+		R021|12308|1|A|027|0|12/31/2004|2004|12|IN|0.0|0.0|cartera|04/01/2005|
+	
+	
+	Ing. Martin Alfonso Nieto Prada
+	DBA - Agencia de Desarrollo Rural (ADR)
+	
